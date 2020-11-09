@@ -7,5 +7,6 @@ namespace ShoppingAPI
     {
         Task<GetProductsResponse> GetSummary();
         Task<GetProductsListSummary> GetSummaryList(string category);
+        Task<GetProductDetailsResponse> GetById(int id);
     }
 }
