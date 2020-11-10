@@ -51,6 +51,9 @@ namespace ShoppingAPI
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton<IMapper>(mapper);
             services.AddSingleton<MapperConfiguration>(mapperConfig);
+
+            services.AddScoped<ICurbsideCommands, EfSqlSynchCurbside>();
+            services.AddScoped<ICurbsideLookups, EfSqlSynchCurbside>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
