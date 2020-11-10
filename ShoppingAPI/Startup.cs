@@ -29,7 +29,10 @@ namespace ShoppingAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+            });
 
             services.AddDbContext<ShoppingDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("shopping"))
@@ -52,8 +55,12 @@ namespace ShoppingAPI
             services.AddSingleton<IMapper>(mapper);
             services.AddSingleton<MapperConfiguration>(mapperConfig);
 
-            services.AddScoped<ICurbsideCommands, EfSqlSynchCurbside>();
-            services.AddScoped<ICurbsideLookups, EfSqlSynchCurbside>();
+            services.AddScoped<ICurbsideCommands, EfSqlAsyncCurbside>();
+            services.AddScoped<ICurbsideLookups, EfSqlAsyncCurbside>();
+
+            services.AddSingleton<CurbsideChannel>();
+
+            services.AddHostedService<CurbsideOrderProcessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

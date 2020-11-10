@@ -11,7 +11,7 @@ namespace ShoppingAPI.Services
 {
     public class EfSqlSynchCurbside : ICurbsideCommands, ICurbsideLookups
     {
-        private readonly ShoppingDataContext _context;
+        protected readonly ShoppingDataContext _context;
 
         public EfSqlSynchCurbside(ShoppingDataContext context)
         {
@@ -27,10 +27,11 @@ namespace ShoppingAPI.Services
             {
                 return new GetCurbsideResponse
                 {
+                    
                     Id = response.Id,
                     For = response.For,
                     Items = response.Items.Split(',').Select(int.Parse).ToArray(),
-                    PickupReadyAt = response.PickupReadyAt.Value
+                    PickupReadyAt = response.PickupReadyAt
                 };
             }
             else
@@ -39,7 +40,7 @@ namespace ShoppingAPI.Services
             }
         }
 
-        public async Task<GetCurbsideResponse> PlaceOrder(PostCurbsideRequest request)
+        public virtual async Task<GetCurbsideResponse> PlaceOrder(PostCurbsideRequest request)
         {
             await Task.Delay(1000 * request.Items.Length);
 
