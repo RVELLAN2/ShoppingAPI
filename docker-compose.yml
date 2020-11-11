@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  api:
+    image: ravivellanki/shopping-api:latest
+    ports:
+      - 80:80
+    networks:
+      - my-network
+    environment:
+      - ConnectionStrings__shopping=server=sql;database=shopping;user=sa;password=TokyoJoe138!
+      - Pricing:Markup=1.15
+      - PickupEstimator:Url=https://pickup
+  sql:
+    image: ravivellanki/shopping-sql:latest
+    networks:
+      - my-network
+    ports:
+      - 1433:1433
+  pickup:
+    image: ravivellanki/pickup-service:latest
+    ports:
+      - 8080:80
+      - 443:443
+    environment: 
+      - ASPNETCORE_HTTPS_PORT = 80
+      - ASPNETCORE_Kestrel_Certificates_Default_Passwords="TokyoJoe138!"
+      - ASPNETCORE_Kestrel_Certificated_Default_Path=\https\aspnetapp.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+    networks:
+      - my-network
+  seq:
+    image: datalust/seq:latest
+    environment: 
+      - ACCEPT_EULA=Y
+    ports:
+      - 5341:80
+networks:
+    my-network:
+      driver: bridge
