@@ -52,7 +52,9 @@ namespace ShoppingAPI.Services
                     _logger.LogInformation($"Processed item {item} for order {order.OrderId}");
                 }
 
-                savedOrder.PickupReadyAt = DateTime.Now.AddDays(new Random().Next(1, 3));
+                var pickup = scope.ServiceProvider.GetRequiredService<IGenerateCurbsidePickupTimes>();
+
+                savedOrder.PickupReadyAt = await pickup.GetPickupDate(savedOrder);
                 await context.SaveChangesAsync();
             }
         }
